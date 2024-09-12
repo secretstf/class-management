@@ -22,7 +22,7 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
 
   // Function to delete a user
   const deleteUser = (userID) => {
-    const changesLog = [`Deleted user ${userID} (${users[userID].fullName})`];
+    const changesLog = { [`${userID}`]: "DELETE" };
     const newUsers = { ...users };
     delete newUsers[userID];
 
@@ -38,7 +38,7 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
 
     console.log(`Updating roles for user ${userID} from ${oldRoles} to ${newRolesList}`);
 
-    const changesLog = [`Updated roles for user ${userID} (${user.fullName})\nFrom: ${oldRoles} \nTo: ${newRolesList}`];
+    const changesLog = {[`${userID}`]: `Updated roles to ${newRolesList}`};
     const newUsers = {
       ...users,
       [userID]: {

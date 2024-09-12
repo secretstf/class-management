@@ -6,20 +6,26 @@ import { getUsers } from "@/services/getUsers";
 import React from "react";
 import { useState, useEffect } from "react";
 
+/**
+ * Represents the admin page component.
+ *
+ * @returns {JSX.Element} The rendered admin page.
+ */
 export default function Page() {
   const [users, setUsers] = useState({});
   const [updatedUsers, setUpdatedUsers] = useState({});
-  const [changesLogged, setChangesLogged] = useState([]);
+  const [changesLogged, setChangesLogged] = useState({});
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(true);
 
+
+  /**
+   * Prints the users' information.
+   */
   function printUsers() {
-    users.map((user) => {
-      console.log(user.firstName + " " + user.lastName);
-      user.emails.map((email) => {
-        console.log(email);
-      });
-    });
+    for (const [key, value] of Object.entries(updatedUsers)) {
+      console.log(`User ${key}: ${value}`);
+    }
   }
 
   const handleAddStudent = (newStudent) => {
@@ -27,13 +33,18 @@ export default function Page() {
   };
 
   const handleUsersUpdate = (newUsers, changeLog) => {
-    setChangesLogged([...changesLogged, ...changeLog]);
+    setChangesLogged({ ...changesLogged, ...changeLog });
+
     setUpdatedUsers(newUsers);
-    setUsers(newUsers);
   };
 
   // load all users in from clerk
   useEffect(() => {
+    /**
+     * Fetches users from the server and updates the state with the fetched users.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the users have been fetched and the state has been updated.
+     */
     const fetchUsers = async () => {
       try {
         // verify admin
@@ -46,8 +57,9 @@ export default function Page() {
 
         await fetch("/api/syncUsers");
 
-        getUsers().then((res) => {
+        await getUsers().then((res) => {
           setUsers(res);
+          setUpdatedUsers(res);
         });
       } catch (error) {
         console.error(error);
@@ -74,6 +86,7 @@ export default function Page() {
     };
   }, [changesLogged]);
 
+  // if not authorized, display unauthorized message
   if (!authorized) {
     return (
       <Box
@@ -107,6 +120,7 @@ export default function Page() {
         >
           <Typography variant="h2">Users</Typography>
           <UpdateBackendButton
+            originalUsers={users}
             updatedUsers={updatedUsers}
             changeLog={changesLogged}
             onClick={printUsers}
@@ -114,7 +128,7 @@ export default function Page() {
         </Box>
         <Box p={2}>
           {!loading && (
-            <AdminUsersInfo users={users} updateUsers={handleUsersUpdate} />
+            <AdminUsersInfo users={updatedUsers} updateUsers={handleUsersUpdate} />
           )}
           {loading && <Typography>Loading...</Typography>}
         </Box>

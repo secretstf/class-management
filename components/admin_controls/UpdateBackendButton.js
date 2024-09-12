@@ -11,7 +11,7 @@ import {
   ListItemText,
 } from "@mui/material";
 
-const UpdateBackendButton = ({ updatedUsers, changeLog, onClick }) => {
+const UpdateBackendButton = ({ originalUsers, updatedUsers, changeLog, onClick }) => {
   const [open, setOpen] = useState(false);
 
   const handleButtonClick = () => {
@@ -51,9 +51,11 @@ const UpdateBackendButton = ({ updatedUsers, changeLog, onClick }) => {
 
           {/* List of changes */}
           <List>
-            {changeLog.map((change, index) => (
+            {Object.keys(changeLog).map((userID, index) => (
               <ListItem key={index}>
-                <ListItemText primary={`${index + 1}. ${change}`} />
+                <ListItemText>
+                  {originalUsers[userID].fullName}: {changeLog[userID]}
+                </ListItemText>
               </ListItem>
             ))}
           </List>
