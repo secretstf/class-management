@@ -47,7 +47,6 @@ export default async function handler(req, res) {
         fullName: `${user.firstName} ${user.lastName}`,
         emails: emails,
         roles: default_roles,
-        students: [],
         invitationCode: 0,
         students: [],
         lessons: [],
@@ -79,7 +78,7 @@ export default async function handler(req, res) {
         ) {
           let keys = new Set(Object.keys(firestoreUsers[user.id]));
           let userKeys = new Set(Object.keys(user));
-          let diff = new Set([...keys].filter((x) => !userKeys.has(x)));
+          let diff = userKeys.symmetricDifference(keys);
           diff.forEach((key) => {
             firestoreUsers[user.id][key] = user[key];
           });
