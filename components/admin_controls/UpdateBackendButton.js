@@ -40,7 +40,7 @@ const UpdateBackendButton = ({ originalUsers, updatedUsers, changeLog, clearLogs
         color="primary"
         sx={{ fontSize: "1.2em", textTransform: "none" }}
       >
-        Update Backend
+        Save Changes
       </Button>
 
       {/* Modal/Dialog for showing the changes */}

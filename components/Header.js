@@ -3,10 +3,20 @@ import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/nextjs";
 
 const Header = () => {
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none'}}> 
-      <Toolbar sx={{justifyContent: 'space-between', display:'flex'}}>
+    <AppBar
+      position="fixed" // Changed to fixed to float above the page
+      sx={{
+        backgroundColor: 'transparent', // Makes the header transparent
+        boxShadow: 'none', // Removes the shadow
+        zIndex: 1300, // Ensures header stays above other content
+        top: 0, // Sticks the header to the top of the viewport
+        left: 0, // Aligns header to the left
+        right: 0, // Ensures the header takes up the full width
+      }}
+    >
+      <Toolbar sx={{ justifyContent: 'space-between', display: 'flex' }}>
         {/* Title */}
-        <Box > 
+        <Box>
           <Typography
             variant="h6"
             component="div"
@@ -26,12 +36,9 @@ const Header = () => {
 
         {/* Authentication Buttons */}
         <Box>
-          {/* Show UserButton when the user is signed in */}
           <SignedIn>
             <UserButton />
           </SignedIn>
-
-          {/* Show SignInButton when the user is signed out */}
           <SignedOut>
             <SignInButton>
               <Button color="primary">Sign In</Button>

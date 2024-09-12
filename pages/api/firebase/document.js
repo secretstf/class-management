@@ -54,6 +54,7 @@ export default async function handler(req, res) {
       data = await JSON.parse(data);
       await setDoc(doc(firestore, collection_name, doc_id), data);
 
+      res.status(200).json({ message: "Document updated" });
     } else if (req.method == "DELETE") {
       // check if id is in the query
       if (!("id" in req.query)) {

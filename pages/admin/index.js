@@ -110,14 +110,22 @@ export default function Page() {
 
   return (
     <div id="Admin Page">
-      <Box width="99vw" height={"95vh"} display="flex" flexDirection="column">
+      <Box p={4}>
+        <Typography variant="h2" align="center">
+          Admin Page
+        </Typography>
+        <Box py={2}>
+        <Divider />
+        </Box>
+      </Box>
+      <Box width="inherit" height={"inherit"} display="flex" flexDirection="column">
         <Box
-          px={2}
+          px={4}
           display={"flex"}
           flexDirection={"row"}
           justifyContent={"space-between"}
         >
-          <Typography variant="h2">Users</Typography>
+          <Typography variant="h3">User Management</Typography>
           <UpdateBackendButton
             originalUsers={users}
             updatedUsers={updatedUsers}
@@ -125,7 +133,7 @@ export default function Page() {
             clearLogs={clearChanges}
           />
         </Box>
-        <Box p={2}>
+        <Box px={4} py={2}>
           {!loading && (
             <AdminUsersInfo users={updatedUsers} updateUsers={handleUsersUpdate} />
           )}
