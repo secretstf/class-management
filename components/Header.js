@@ -3,10 +3,10 @@ import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/nextjs";
 
 const Header = () => {
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
-      <Toolbar>
+    <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none'}}> 
+      <Toolbar sx={{justifyContent: 'space-between', display:'flex'}}>
         {/* Title */}
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }} > 
+        <Box > 
           <Typography
             variant="h6"
             component="div"
