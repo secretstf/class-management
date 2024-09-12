@@ -10,8 +10,13 @@ export default async function handler(req, res) {
             }
 
             // delete the user with the id
-            const { id } = req.query.id;
-            await clerkClient.users.deleteUser(id);
+            const id = req.query.id;
+            const resp = await clerkClient.users.deleteUser(id);
+
+            if (resp.status !== 200) {
+                res.status(500).json({ error: "Error deleting user" });
+                return;
+            }
 
             res.status(200).json({ message: `User ${id} deleted` });
         } else if (req.method == "GET"){

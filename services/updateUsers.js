@@ -4,19 +4,26 @@ const updateUsers = async (updatedUsers, changeLog) => {
         // if the value is "DELETE", delete the user
         if (value === "DELETE") {
             // delete the user
-            console.log(`Deleting user ${key}`);
-
-            let response = await fetch(`/api/firebase/document?collection=users&id=${key}`, {
+            await fetch(`/api/firebase/document?collection=users&id=${key}`, {
                 method: "DELETE",
+            }).then(async(response) => {
+                if (response.status !== 200) {
+                    console.error("Error deleting user from firebase");
+                    return;
+                }
+
+                await fetch(`/api/clerkUser?id=${key}`, {
+                    method: "DELETE",
+                }).then((response) => {
+                    if (response.status !== 200) {
+                        console.error("Error deleting clerk user");
+                    }
+                });
             });
 
-            if (response.status !== 200) {
-                console.error("Error deleting user");
-            }
+            
         } else {
             // update the user
-            console.log(`Updating user ${key} with ${value}`);
-
             let response = await fetch(`/api/firebase/document?collection=users&id=${key}`, {
                 method: "POST",
                 body: JSON.stringify(updatedUsers[key]),

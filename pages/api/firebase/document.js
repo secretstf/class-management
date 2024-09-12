@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { firestore } from "./firestore";
 
 export default async function handler(req, res) {
@@ -70,7 +70,8 @@ export default async function handler(req, res) {
       const docRef = await getDoc(snapshot);
 
       if (docRef.exists()) {
-        await snapshot.delete();
+        console.log("Deleting document");
+        const resp = await deleteDoc(snapshot);
         res.status(200).json({ message: "Document deleted" });
       } else {
         res.status(404).json({ error: "Document does not exist!" });
