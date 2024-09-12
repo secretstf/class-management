@@ -23,9 +23,7 @@ export default function Page() {
    * Prints the users' information.
    */
   function printUsers() {
-    for (const [key, value] of Object.entries(updatedUsers)) {
-      console.log(`User ${key}: ${value}`);
-    }
+    console.log("Users: ", updatedUsers);
   }
 
   const handleAddStudent = (newStudent) => {
@@ -123,7 +121,6 @@ export default function Page() {
             originalUsers={users}
             updatedUsers={updatedUsers}
             changeLog={changesLogged}
-            onClick={printUsers}
           />
         </Box>
         <Box p={2}>

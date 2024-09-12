@@ -75,7 +75,7 @@ export default async function handler(req, res) {
       } else {
         res.status(404).json({ error: "Document does not exist!" });
       }
-    }else {
+    } else {
       res.status(405).json({ error: "Invalid request method" });
     }
   } catch (error) {

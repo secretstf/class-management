@@ -10,8 +10,9 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
+import { updateUsers } from "@/services/updateUsers";
 
-const UpdateBackendButton = ({ originalUsers, updatedUsers, changeLog, onClick }) => {
+const UpdateBackendButton = ({ originalUsers, updatedUsers, changeLog }) => {
   const [open, setOpen] = useState(false);
 
   const handleButtonClick = () => {
@@ -26,7 +27,7 @@ const UpdateBackendButton = ({ originalUsers, updatedUsers, changeLog, onClick }
 
   const handleSave = () => {
     // Call onClick function to update the backend
-    onClick();
+    updateUsers(updatedUsers, changeLog);
     setOpen(false); // Close the modal after saving
   };
 

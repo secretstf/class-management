@@ -36,8 +36,6 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
     const oldRoles = Object.keys(user.roles).filter((role) => user.roles[role]).map((role) => role.charAt(0).toUpperCase() + role.slice(1)).sort().join(", ");
     const newRolesList = Object.keys(newRoles).filter((role) => newRoles[role]).map((role) => role.charAt(0).toUpperCase() + role.slice(1)).sort().join(", ");
 
-    console.log(`Updating roles for user ${userID} from ${oldRoles} to ${newRolesList}`);
-
     const changesLog = {[`${userID}`]: `Updated roles to ${newRolesList}`};
     const newUsers = {
       ...users,
