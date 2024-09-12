@@ -22,8 +22,10 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
 
   // Function to delete a user
   const deleteUser = (userID) => {
-    const changesLog = [`Deleted user ${userID}`];
-    const newUsers = users.filter((u) => u.id !== userID);
+    const changesLog = [`Deleted user ${userID} (${users[userID].fullName})`];
+    const newUsers = { ...users };
+    delete newUsers[userID];
+
     updateUsers(newUsers, changesLog);
   }
 
@@ -37,14 +39,21 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
     console.log(`Updating roles for user ${userID} from ${oldRoles} to ${newRolesList}`);
 
     const changesLog = [`Updated roles for user ${userID} (${user.fullName})\nFrom: ${oldRoles} \nTo: ${newRolesList}`];
-    const newUsers = users.map((u) => (u.id === userID ? { ...u, roles: newRoles } : u));
+    const newUsers = {
+      ...users,
+      [userID]: {
+        ...user,
+        roles: newRoles,
+      },
+    }
+
     updateUsers(newUsers, changesLog);
   }
 
   return (
     <div style={{ padding: "4" }}>
       {/* Map through users and display user data */}
-      {users.map((user, index) => (
+      {Object.values(users).map((user, index) => (
         <Card key={index} variant="outlined" style={{ marginBottom: "20px" }}>
           {/* Accordion for Emails */}
           <Accordion disableGutters>

@@ -5,7 +5,14 @@ const getUsers = async () => {
     if (!res.ok) {
       throw new Error("Network response was not ok");
     }
-    return await res.json();
+    let data = await res.json();
+
+    let dataDict = data.reduce((acc, user) => {
+        acc[user.id] = user;
+        return acc;
+    }, {});
+
+    return dataDict;
   });
 
   return data;

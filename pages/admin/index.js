@@ -3,12 +3,13 @@ import { AdminUsersInfo } from "@/components/admin_controls/AdminUsersInfo";
 import { UpdateBackendButton } from "@/components/admin_controls/UpdateBackendButton";
 import { Box, Typography } from "@mui/material";
 import { getCollectionData } from "@/services/fetchCollection.js";
+import { getUsers } from "@/services/getUsers";
 import React from "react";
 import { useState, useEffect } from "react";
 
 export default function Page() {
-  const [users, setUsers] = useState([]);
-  const [updatedUsers, setUpdatedUsers] = useState([]);
+  const [users, setUsers] = useState({});
+  const [updatedUsers, setUpdatedUsers] = useState({});
   const [changesLogged, setChangesLogged] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +38,7 @@ export default function Page() {
       try {
         fetch("api/syncUsers");
 
-        getCollectionData("users").then((res) => {
+        getUsers().then((res) => {
           setUsers(res);
         });
       } catch (error) {
@@ -63,7 +64,7 @@ export default function Page() {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [updatedUsers]);
+  }, [changesLogged]);
 
   return (
     <div id="Admin Page">

@@ -1,4 +1,4 @@
-import { getCollectionData } from "@/services/data_request";
+import { getCollectionData } from "@/services/fetchCollection.js";
 import { useEffect, useState } from "react";
 
 export default function Home() {
