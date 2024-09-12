@@ -72,7 +72,6 @@ const LandingPage = () => {
                 color="primary"
                 size="large"
                 sx={{ padding: "12px 24px", borderRadius: "24px" }}
-                onClick={() => console.log("Get Started!")}
             >
                 Sign In
             </Button>

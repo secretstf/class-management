@@ -49,6 +49,8 @@ export default async function handler(req, res) {
         roles: default_roles,
         students: [],
         invitationCode: 0,
+        students: [],
+        lessons: [],
       });
     });
 
