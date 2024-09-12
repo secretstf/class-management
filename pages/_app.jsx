@@ -6,7 +6,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ClerkProvider {...pageProps}>
       <Header />
-      <Box px='8px' py='16px'>
+      <Box px='8px' py='8px'>
         <Component {...pageProps} />
       </Box>
     </ClerkProvider>
