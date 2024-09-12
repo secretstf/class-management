@@ -5,7 +5,14 @@ const getCollectionData = async (collectionName) => {
         if (!res.ok) {
             throw new Error("Network response was not ok");
         }
-        return await res.json();
+        let data = await res.json();
+
+        // make a dictionary of the data with id as the key
+        let dict = data.reduce((acc, doc) => (acc[doc.id] = doc, acc), {});
+
+        console.log(dict);
+
+        return data;
     });
 
     return data;
