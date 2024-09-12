@@ -3,18 +3,26 @@ import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/nextjs";
 
 const Header = () => {
   return (
-    <AppBar position="static" sx={{backgroundColor:'transparent', boxShadow: 'none'}}>
+    <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
       <Toolbar>
         {/* Title */}
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ flexGrow: 1 }}
-          align="center"
-          color="gray"
-        >
-          Class Management System
-        </Typography>
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }} > 
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              textAlign: 'center',
+              color: 'gray',
+              backgroundColor: 'white', // Optional: background color for better visibility
+              borderRadius: '8px', // Adjust to control the roundness
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Adjust shadow as needed
+              padding: '8px 16px', // Optional: padding for better appearance
+              display: 'inline-block', // Ensures the box sizes to fit content
+            }}
+          >
+            Class Management System
+          </Typography>
+        </Box>
 
         {/* Authentication Buttons */}
         <Box>

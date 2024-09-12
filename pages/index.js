@@ -1,4 +1,4 @@
-import { getAllData } from "@/services/data_request";
+import { getCollectionData } from "@/services/data_request";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -7,7 +7,7 @@ export default function Home() {
     const [error, setError] = useState(null);  // Error state
   
     useEffect(() => {
-        getAllData("test").then((data) => {
+        getCollectionData("test").then((data) => {
             setData(data);
             setLoading(false);
         }).catch((error) => {
