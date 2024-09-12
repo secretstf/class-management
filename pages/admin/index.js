@@ -19,9 +19,6 @@ export default function Page() {
   const [authorized, setAuthorized] = useState(true);
 
 
-  /**
-   * Prints the users' information.
-   */
   function printUsers() {
     console.log("Users: ", updatedUsers);
   }
@@ -35,6 +32,10 @@ export default function Page() {
 
     setUpdatedUsers(newUsers);
   };
+
+  function clearChanges() {
+    setChangesLogged({});
+  }
 
   // load all users in from clerk
   useEffect(() => {
@@ -121,6 +122,7 @@ export default function Page() {
             originalUsers={users}
             updatedUsers={updatedUsers}
             changeLog={changesLogged}
+            clearLogs={clearChanges}
           />
         </Box>
         <Box p={2}>
