@@ -1,44 +1,86 @@
-import { getCollectionData } from "@/services/fetchCollection.js";
-import { useEffect, useState } from "react";
+import React from "react";
+import { Box, Typography, Button } from "@mui/material";
+import { useUser } from "@clerk/nextjs";
+import { SignInButton } from "@clerk/nextjs";
 
-export default function Home() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);  // Loading state
-    const [error, setError] = useState(null);  // Error state
-  
-    useEffect(() => {
-        getCollectionData("test").then((data) => {
-            setData(data);
-            setLoading(false);
-        }).catch((error) => {
-            setError(error);
-            setLoading(false);
-        });
-    }, []);
+const LandingPage = () => {
+  const { isLoading, user, isSignedIn } = useUser();
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+  return (
+    <Box
+      sx={{
+        height: "inherit",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "inherit",
+      }}
+    >
+      {/* Heading */}
+      {isLoading && (
+        <Typography variant="h3" component="h1" gutterBottom align="center">
+          Loading...
+        </Typography>
+      )}
 
-    if (error) {
-        return <p>Error: {error.message}</p>;
-    }
-  
-    return (
-      <div>
-        <h1>Welcome to My First Next.js Web Page!</h1>
-        <p>This is a simple Next.js app.</p>
-  
-        <h2>Firestore Data</h2>
-        {data.length === 0 ? (
-          <p>No data found</p>
-        ) : (
-          <ul>
-            {data.map((item) => (
-              <li key={item.id}>{item.name || JSON.stringify(item)}</li>  
-            ))}
-          </ul>
-        )}
-      </div>
-    );
-}
+      {isSignedIn && (
+        <>
+          <Typography variant="h3" component="h1" gutterBottom align="center">
+            Welcome back, {user.firstName}!
+          </Typography>
+          <Typography
+            variant="body1"
+            component="p"
+            align="center"
+            sx={{ maxWidth: "600px", marginBottom: "32px" }}
+          >
+            To get started, click the button below to go to your dashboard!
+          </Typography>
+
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            sx={{ padding: "12px 24px", borderRadius: "24px" }}
+            onClick={() => {
+              window.location.href = "/dashboard";
+            }}
+          >
+            Go to Dashboard
+          </Button>
+        </>
+      )}
+
+      {!isSignedIn && !isLoading && (
+        <>
+          <Typography variant="h3" component="h1" gutterBottom align="center">
+            Welcome to Class Management System
+          </Typography>
+
+          <Typography
+            variant="body1"
+            component="p"
+            align="center"
+            sx={{ maxWidth: "600px", marginBottom: "32px" }}
+          >
+            To get started, sign in to your account and head to your dashboard!
+          </Typography>
+          <SignInButton>
+            <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{ padding: "12px 24px", borderRadius: "24px" }}
+                onClick={() => console.log("Get Started!")}
+            >
+                Sign In
+            </Button>
+          </SignInButton>
+        </>
+      )}
+    </Box>
+  );
+};
+
+export default LandingPage;
