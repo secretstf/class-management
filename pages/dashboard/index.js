@@ -11,10 +11,11 @@ import { useEffect, useState } from "react";
 import { AccountTypeSelector } from "@/components/dashboardElements/AccountTypeSelector.js";
 import { updateUser } from "@/services/updateUser";
 import  ParentDashboard  from "@/components/dashboardElements/ParentDashboard.js";
+import AdminPage from "@/pages/admin/index.js";
 
 const Dashboard = () => {
   const {isLoading, user, isSignedIn} = useUser();
-  const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState([]);
   const [userData, setUserData] = useState(null);
 
   async function  handleAccountSelection(type) {
@@ -26,9 +27,30 @@ const Dashboard = () => {
     await updateUser(user.id, userData);
   }
 
+  const updateUser = async (userID, updatedUser) => {
+    const response = await fetch(`/api/firestoreUser?id=${userID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedUser),
+    });
+
+    if (response.status === 200) {
+      setUserData(updatedUser);
+    }
+  } 
+
   useEffect(() => {
     const fetchUserData = async () => {
-      const response = await fetch("/api/firestoreUser");
+      const response = await fetch("/api/firestoreUser", 
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+      );
       if (response.status === 401) {
         return; 
       } else if (response.status === 404) {
@@ -37,18 +59,7 @@ const Dashboard = () => {
 
       const data = await response.json();
       setUserData(data);
-
-      if (data.roles.admin) {
-        setUserRole('parent');
-      } else if (data.roles.teacher) {
-        setUserRole('teacher');
-      } else if (data.roles.student) {
-        setUserRole('student');
-      } else if (data.roles.parent) {
-        setUserRole('parent');
-      } else {  
-        setUserRole('unset');
-      }
+      setUserRole(data.roles);
     };
 
     if (user) {
@@ -58,7 +69,6 @@ const Dashboard = () => {
 
   return (
     <Box justifyContent={"center"} alignItems={"center"} display={"flex"} width={'100%'} height={'100%'} flexDirection={'column'}>
-      <Typography>Under construction...</Typography>
 
       {/* If the user is not signed in */}
       {!isLoading && !isSignedIn && (
@@ -91,17 +101,43 @@ const Dashboard = () => {
 
       {/* If the user is unset */}
       {
-        userRole === 'unset' && (
+        userRole.length === 0 && (
           <AccountTypeSelector onSelect={handleAccountSelection} />
         )
       }
 
       {/* If the user is a parent */}
       {
-        userRole === 'parent' && (
-          <ParentDashboard user={userData}/>
+        userRole.parent && (
+          <ParentDashboard user={userData} updateUser={updateUser}/>
         )
       }
+
+      {/* If the user is a teacher */}
+      {
+        userRole.teacher && (
+          <Typography>Teacher Dashboard</Typography>
+        )
+      }
+
+      {/* If the user is a student */}
+      {
+       userRole.student && (
+          <Typography>Student Dashboard</Typography>
+        )
+      }
+
+      {/* If the user is an admin */}
+      {/* {
+        userRole.admin && (
+          <AdminPage />
+        )
+      } */}
+
+        {
+          <Typography>{JSON.stringify(userData)}</Typography>
+        }
+      
     </Box>
   );
 };

@@ -68,7 +68,7 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
         sx={{
           // Display cards as grid with responsive columns
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" }, // 1 column on small screens, 3 columns on medium+
+          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)",md: "repeat(3, 1fr)" }, // 1 column on small screens, 3 columns on medium+
           gap: 2, // Space between the cards
         }}
       >

@@ -103,6 +103,18 @@ export default async function handler(req, res) {
       }
     });
 
+    // go through the firestore users
+    Object.keys(firestoreUsers).forEach((id) => {
+      clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          admin: firestoreUsers[id].roles.admin,
+          parent: firestoreUsers[id].roles.parent,
+          student: firestoreUsers[id].roles.student,
+          teacher: firestoreUsers[id].roles.teacher,
+        },
+      });
+    });
+
     console.log(invitationCodeDictionary);
     await setDoc(
       doc(firestore, "invitationCodes", "dictionary"),

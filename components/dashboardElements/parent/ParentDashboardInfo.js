@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 
-const ParentDashboardInfo = () => {
+const ParentDashboardInfo = (student) => {
   return (
     <Box p={2} border={1} borderColor="grey.300" borderRadius={2} boxShadow={2}>
       <Typography variant="h6">Child's Information</Typography>

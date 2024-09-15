@@ -4,7 +4,7 @@ import { Fab, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Butt
 import AddIcon from '@mui/icons-material/Add';
 import { checkInvitationCode } from '@/services/checkInvitationCode'; // This should be your API or service for checking codes
 
-const AddStudentFAB = ({ updateUsers }) => {
+const AddStudentFAB = ({ user, updateUser }) => {
   const [open, setOpen] = useState(false);
   const [invitationCode, setInvitationCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,8 +25,9 @@ const AddStudentFAB = ({ updateUsers }) => {
       const {isValid, studentID} = await checkInvitationCode(invitationCode); // Check if the code is valid
       console.log(isValid, studentID);
       if (isValid) {
-        // Update users if the code is valid
-        // updateUsers(invitationCode); // Modify this as per your logic to update users
+        // Add the student to the user's list
+        const updatedUser = { ...user, students: [...user.students, studentID] };
+        await updateUser(user.id, updatedUser);
         setSnackbarMessage('Student added successfully!');
       } else {
         setSnackbarMessage('Invalid invitation code.');

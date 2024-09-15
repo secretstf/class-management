@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Box, Typography, Button, Snackbar, Alert } from "@mui/material";
-import ParentDashboardInfo from "./ParentDashboardInfo"; // Optional, if you have additional info to show
-import AddStudentFAB from "./AddStudentFAB";
+import ParentDashboardInfo from "./parent/ParentDashboardInfo"; // Optional, if you have additional info to show
+import AddStudentFAB from "./parent/AddStudentFAB";
 
-const ParentDashboard = ({ user }) => {
+const ParentDashboard = ({ user, updateUser }) => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -33,7 +33,7 @@ const ParentDashboard = ({ user }) => {
   return (
     <Box p={4}>
       <Typography variant="h4" gutterBottom>
-        Welcome to Your Dashboard
+        Welcome to Your Parent Dashboard
       </Typography>
       {showPrompt && (
         <Box
@@ -45,21 +45,13 @@ const ParentDashboard = ({ user }) => {
           mb={2}
         >
           <Typography variant="body1">
-            Your student list is currently empty. Click the "Add" button below
-            to invite a student and provide their invitation code.
+            Your student list is currently empty. Click the "Add" button on the right
+            to add a student by providing their invitation code.
           </Typography>
         </Box>
       )}
-      <ParentDashboardInfo />
-      <Box display="flex" flexDirection="column" alignItems="center" mt={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddStudentClick}
-        >
-          Add Student
-        </Button>
-      </Box>
+      {/* <ParentDashboardInfo /> */}
+      
       {/* Snackbar for user feedback */}
       <Snackbar
         open={openSnackbar}
@@ -77,7 +69,7 @@ const ParentDashboard = ({ user }) => {
       </Snackbar>
 
       {/* Floating action button to add a student */}
-      <AddStudentFAB />
+      <AddStudentFAB user={user} updateUser={updateUser}/>
     </Box>
   );
 };

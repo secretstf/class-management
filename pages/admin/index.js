@@ -10,7 +10,7 @@ import React, { useState, useEffect } from "react";
  *
  * @returns {JSX.Element} The rendered admin page.
  */
-export default function Page() {
+export default function AdminPage() {
   const [users, setUsers] = useState({});
   const [updatedUsers, setUpdatedUsers] = useState({});
   const [changesLogged, setChangesLogged] = useState({});
