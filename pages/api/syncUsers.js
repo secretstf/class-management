@@ -50,6 +50,7 @@ export default async function handler(req, res) {
         invitationCode: 0,
         students: [],
         lessons: [],
+        currentLesson: {},
       });
     });
 

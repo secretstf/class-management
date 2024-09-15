@@ -1,28 +1,37 @@
 // components/ParentDashboard.js
 
 import { useState, useEffect } from "react";
-import { Box, Typography, Button, Snackbar, Alert } from "@mui/material";
+import { Box, Typography, Button, Snackbar, Alert, Card, Divider } from "@mui/material";
 import ParentDashboardInfo from "./parent/ParentDashboardInfo"; // Optional, if you have additional info to show
 import AddStudentFAB from "./parent/AddStudentFAB";
 
 const ParentDashboard = ({ user, updateUser }) => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [students, setStudents] = useState([]);
 
   // Check if students array is empty
-  const checkStudents = () => {
+  const checkStudents = async () => {
     if (user.students.length === 0) {
       setShowPrompt(true);
       setOpenSnackbar(true);
+      return;
     }
+
+    // get student data
+    const studentData = await Promise.all(
+      user.students.map(async (studentId) => {
+        const response = await fetch(`/api/firestoreUser?id=${studentId}`);
+        const data = await response.json();
+        return data;
+      })
+    );
+
+    setStudents(studentData);
   };
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
-  };
-
-  const handleAddStudentClick = () => {
-    // Handle the logic for adding a student
   };
 
   // Call checkStudents function when the component mounts
@@ -31,13 +40,13 @@ const ParentDashboard = ({ user, updateUser }) => {
   }, [user.students]);
 
   return (
-    <Box p={4}>
+    <Box p={4} width={"100%"} height={"100%"} display={'flex'} flexDirection={'column'}>
       <Typography variant="h4" gutterBottom>
-        Welcome to Your Parent Dashboard
+        Parent Dashboard
       </Typography>
       {showPrompt && (
         <Box
-          p={2}
+          p={1}
           border={1}
           borderColor="grey.300"
           borderRadius={2}
@@ -45,13 +54,28 @@ const ParentDashboard = ({ user, updateUser }) => {
           mb={2}
         >
           <Typography variant="body1">
-            Your student list is currently empty. Click the "Add" button on the right
-            to add a student by providing their invitation code.
+            Your student list is currently empty. Click the "Add" button on the
+            right to add a student by providing their invitation code.
           </Typography>
         </Box>
       )}
-      {/* <ParentDashboardInfo /> */}
-      
+
+      {students.length > 0 && (
+        <Box pb={1}>
+        <Typography variant="body1" textAlign={"left"}>
+          Click on a student to view more details
+        </Typography>
+        <Divider />
+      </Box >
+      )}
+
+      {/* Display student data here */}
+      {students.map((student) => (
+        <Box p={1}>
+          <ParentDashboardInfo student={student} />
+        </Box>
+      ))}
+
       {/* Snackbar for user feedback */}
       <Snackbar
         open={openSnackbar}
@@ -69,7 +93,7 @@ const ParentDashboard = ({ user, updateUser }) => {
       </Snackbar>
 
       {/* Floating action button to add a student */}
-      <AddStudentFAB user={user} updateUser={updateUser}/>
+      <AddStudentFAB user={user} updateUser={updateUser} />
     </Box>
   );
 };

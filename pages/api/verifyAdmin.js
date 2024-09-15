@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
         const user = await clerkClient.users.getUser(userId);
         
-        if (!user.privateMetadata.admin) {
+        if (!user.publicMetadata.admin) {
             return res.status(401).send("Unauthorized");
         }
 
