@@ -1,83 +1,107 @@
-import { Box, Typography, Button, Card, CardContent, Grid } from "@mui/material";
-import { useUser, SignOutButton } from "@clerk/nextjs";
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+} from "@mui/material";
+import { useUser, SignInButton } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
+import { AccountTypeSelector } from "@/components/dashboardElements/AccountTypeSelector.js";
+import { updateUser } from "@/services/updateUser";
+import  ParentDashboard  from "@/components/dashboardElements/ParentDashboard.js";
 
 const Dashboard = () => {
-  const { user } = useUser(); // Access user details from Clerk
+  const {isLoading, user, isSignedIn} = useUser();
+  const [userRole, setUserRole] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  async function  handleAccountSelection(type) {
+    setUserRole(type);
+
+    // Update the user's roles in the database
+    userData.roles[type] = true;
+    console.log(userData);
+    await updateUser(user.id, userData);
+  }
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const response = await fetch("/api/firestoreUser");
+      if (response.status === 401) {
+        return; 
+      } else if (response.status === 404) {
+        return;
+      }
+
+      const data = await response.json();
+      setUserData(data);
+
+      if (data.roles.admin) {
+        setUserRole('parent');
+      } else if (data.roles.teacher) {
+        setUserRole('teacher');
+      } else if (data.roles.student) {
+        setUserRole('student');
+      } else if (data.roles.parent) {
+        setUserRole('parent');
+      } else {  
+        setUserRole('unset');
+      }
+    };
+
+    if (user) {
+      fetchUserData();
+    }
+  }, [user]);
 
   return (
-    <Box 
-      display="flex" 
-      flexDirection="column" 
-      alignItems="center" 
-      justifyContent="center" 
-      height="100vh" 
-      sx={{ backgroundColor: '#f5f5f5', padding: 2 }}
-    >
-      <Typography variant="h3" gutterBottom>
-        Dashboard
-      </Typography>
+    <Box justifyContent={"center"} alignItems={"center"} display={"flex"} width={'100%'} height={'100%'} flexDirection={'column'}>
+      <Typography>Under construction...</Typography>
 
-      <Typography variant="h6" gutterBottom>
-        Welcome, {user?.fullName || 'User'}!
-      </Typography>
+      {/* If the user is not signed in */}
+      {!isLoading && !isSignedIn && (
+        <>
+          <Typography>Sign in to view your dashboard</Typography>
+          <SignInButton>
+            <Button variant={"contained"} color={"primary"}>
+              Sign in
+            </Button>
+          </SignInButton>
+        </>
+      )}
 
-      <Grid container spacing={3} justifyContent="center">
-        <Grid item xs={12} sm={6} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                Feature 1
-              </Typography>
-              <Typography variant="body2">
-                Description of Feature 1.
-              </Typography>
-              <Button variant="contained" color="primary" sx={{ marginTop: 2 }}>
-                Explore
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
+      {/* If the user is loading in */}
+      {
+        isLoading && (
+          <Typography>Loading...</Typography>
+        )
+      }
 
-        <Grid item xs={12} sm={6} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                Feature 2
-              </Typography>
-              <Typography variant="body2">
-                Description of Feature 2.
-              </Typography>
-              <Button variant="contained" color="primary" sx={{ marginTop: 2 }}>
-                Explore
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
+      {/* If the user is signed in
+      {
+        isSignedIn && (
+          <>
+            <Typography>Welcome back, {user.firstName}!</Typography>
+            <Typography>You are signed in as a {userRole}</Typography>
+          </>
+        )
+      } */}
 
-        <Grid item xs={12} sm={6} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                Feature 3
-              </Typography>
-              <Typography variant="body2">
-                Description of Feature 3.
-              </Typography>
-              <Button variant="contained" color="primary" sx={{ marginTop: 2 }}>
-                Explore
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      {/* If the user is unset */}
+      {
+        userRole === 'unset' && (
+          <AccountTypeSelector onSelect={handleAccountSelection} />
+        )
+      }
 
-      <Box mt={4}>
-        <SignOutButton>
-          <Button variant="outlined" color="secondary">
-            Sign Out
-          </Button>
-        </SignOutButton>
-      </Box>
+      {/* If the user is a parent */}
+      {
+        userRole === 'parent' && (
+          <ParentDashboard user={userData}/>
+        )
+      }
     </Box>
   );
 };

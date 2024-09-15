@@ -64,77 +64,88 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
 
   return (
     <div style={{ padding: "4" }}>
-      {/* Map through users and display user data */}
-      {Object.values(users).map((user, index) => (
-        <Card
-          key={index}
-          variant="outlined"
-          style={{ marginBottom: "20px", width: "inherit" }}
-        >
-          {/* Accordion for Emails */}
-          <Accordion
-            disableGutters
-            expanded={expanded === user.id}
-            onChange={handleChange(user.id)}
+      <Box
+        sx={{
+          // Display cards as grid with responsive columns
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" }, // 1 column on small screens, 3 columns on medium+
+          gap: 2, // Space between the cards
+        }}
+      >
+        {/* Map through users and display user data */}
+        {Object.values(users).map((user, index) => (
+          <Card
+            key={index}
+            variant="contained"
+            style={{ marginBottom: "20px", width: "inherit", maxHeight: (expanded === user.id) ? "100vh" : "auto" }}
           >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={`panel${index}-content`}
-              id={`panel${index}-header`}
-              sx={{
-                minHeight: "32px",
-              }}
+            {/* Accordion for Emails */}
+            <Accordion
+              key={user.id}
+              variant="outlined"
+              disableGutters
+              expanded={expanded === user.id}
+              onChange={handleChange(user.id)}
             >
-              <Box
-                width={"100%"}
-                justifyContent={"space-between"}
-                display={"flex"}
-                alignItems={"center"}
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`panel${index}-content`}
+                id={`panel${index}-header`}
+                sx={{
+                  minHeight: "32px",
+                }}
               >
-                <Typography>{user.fullName}</Typography>
-                {expanded !== user.id && (
-                  <Typography sx={{ color: "gray", marginRight: "8px" }}>
-                    {Object.keys(user.roles)
-                      .filter((role) => user.roles[role])
-                      .map(
-                        (role) => role.charAt(0).toUpperCase() + role.slice(1)
-                      )
-                      .sort()
-                      .join(", ")}
-                  </Typography>
-                )}
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails>
-              {/* Email List */}
-              <List>
-                {user.emails.map((email, idx) => (
-                  <ListItem key={idx}>
-                    <EmailIcon
-                      fontSize="small"
-                      style={{ marginRight: "8px" }}
-                    />
-                    {email}
-                  </ListItem>
-                ))}
-              </List>
+                <Box
+                  width={"100%"}
+                  justifyContent={"space-between"}
+                  display={"flex"}
+                  alignItems={"center"}
+                >
+                  <Typography>{user.fullName}</Typography>
+                  {expanded !== user.id && (
+                    <Typography sx={{ color: "gray", marginRight: "8px" }}>
+                      {Object.keys(user.roles)
+                        .filter((role) => user.roles[role])
+                        .map(
+                          (role) => role.charAt(0).toUpperCase() + role.slice(1)
+                        )
+                        .sort()
+                        .join(", ")}
+                    </Typography>
+                  )}
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                {/* Email List */}
+                <List>
+                  {user.emails.map((email, idx) => (
+                    <ListItem key={idx}>
+                      <EmailIcon
+                        fontSize="small"
+                        style={{ marginRight: "8px" }}
+                      />
+                      {email}
+                    </ListItem>
+                  ))}
+                </List>
 
-              {/* AdminRoleInfo component: shows roles and allows adjustments */}
-              <AdminRoleInfo user={user} updateRoles={updateRoles} />
+                {/* AdminRoleInfo component: shows roles and allows adjustments */}
+                <AdminRoleInfo user={user} updateRoles={updateRoles} />
 
-              <Divider />
+                <Divider />
 
-              {/* Delete Button */}
-              <Box display="flex" justifyContent="flex-end">
-                <AdminDeleteButton
-                  userID={user.id}
-                  deleteFunction={deleteUser}
-                />
-              </Box>
-            </AccordionDetails>
-          </Accordion>
-        </Card>
-      ))}
+                {/* Delete Button */}
+                <Box display="flex" justifyContent="flex-end">
+                  <AdminDeleteButton
+                    userID={user.id}
+                    deleteFunction={deleteUser}
+                  />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          </Card>
+        ))}
+      </Box>
     </div>
   );
 };

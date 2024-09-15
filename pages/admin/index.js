@@ -3,8 +3,7 @@ import { AdminUsersInfo } from "@/components/admin_controls/AdminUsersInfo";
 import { UpdateBackendButton } from "@/components/admin_controls/UpdateBackendButton";
 import { Box, Divider, Typography } from "@mui/material";
 import { getUsers } from "@/services/getUsers";
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 /**
  * Represents the admin page component.
@@ -18,7 +17,6 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(true);
 
-
   function printUsers() {
     console.log("Users: ", updatedUsers);
   }
@@ -29,7 +27,6 @@ export default function Page() {
 
   const handleUsersUpdate = (newUsers, changeLog) => {
     setChangesLogged({ ...changesLogged, ...changeLog });
-
     setUpdatedUsers(newUsers);
   };
 
@@ -37,16 +34,9 @@ export default function Page() {
     setChangesLogged({});
   }
 
-  // load all users in from clerk
   useEffect(() => {
-    /**
-     * Fetches users from the server and updates the state with the fetched users.
-     * 
-     * @returns {Promise<void>} A promise that resolves when the users have been fetched and the state has been updated.
-     */
     const fetchUsers = async () => {
       try {
-        // verify admin
         const response = await fetch("api/verifyAdmin");
         if (response.status !== 200) {
           setAuthorized(false);
@@ -55,7 +45,6 @@ export default function Page() {
         }
 
         await fetch("/api/syncUsers");
-
         await getUsers().then((res) => {
           setUsers(res);
           setUpdatedUsers(res);
@@ -85,16 +74,15 @@ export default function Page() {
     };
   }, [changesLogged]);
 
-  // if not authorized, display unauthorized message
   if (!authorized) {
     return (
       <Box
         height={"100vh"}
         width={"100vw"}
-        alignItems={"center"}
-        justifyContent={"center"}
-        display={"flex"}
-        flexDirection={"column"}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
       >
         <Typography variant="h2">Unauthorized</Typography>
         <br />
@@ -109,38 +97,62 @@ export default function Page() {
   }
 
   return (
-    <div id="Admin Page">
-      <Box p={4}>
-        <Typography variant="h2" align="center">
-          Admin Page
-        </Typography>
-        <Box py={2}>
+    <Box
+      id="Admin Page"
+      p={{ xs: 2, md: 4 }}  // Adjust padding for smaller screens
+      display="flex"
+      flexDirection="column"
+    >
+      <Typography variant="h2" align="center" sx={{ fontSize: { xs: '1.5rem', md: '2.5rem' } }}>  {/* Smaller font size on mobile */}
+        Admin Page
+      </Typography>
+      <Box py={2}>
         <Divider />
-        </Box>
       </Box>
-      <Box width="inherit" height={"inherit"} display="flex" flexDirection="column">
+      
+      <Box width="100%" height="inherit" display="flex" flexDirection="column">
         <Box
-          px={4}
-          display={"flex"}
-          flexDirection={"row"}
-          justifyContent={"space-between"}
+          px={{ xs: 2, md: 4 }}  // Adjust padding for small screens
+          display="flex"
+          flexDirection="row"  // Keep items in a row for all screens
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+          flexWrap="nowrap"  // Prevent wrapping on larger screens
         >
-          <Typography variant="h3">User Management</Typography>
+          <Typography
+            variant="h3"
+            sx={{ fontSize: { xs: '1.2rem', md: '2rem' }, flexGrow: 1 }}  // Allow title to grow and take up space
+          >
+            User Management
+          </Typography>
           <UpdateBackendButton
             originalUsers={users}
             updatedUsers={updatedUsers}
             changeLog={changesLogged}
             clearLogs={clearChanges}
+            sx={{ marginLeft: '16px' }}  // Keep some margin between title and button
           />
         </Box>
-        <Box px={4} py={2}>
-          {!loading && (
+
+        <Box px={{ xs: 2, md: 4 }} py={2}>
+          {!loading ? (
             <AdminUsersInfo users={updatedUsers} updateUsers={handleUsersUpdate} />
+          ) : (
+            <Typography>Loading...</Typography>
           )}
-          {loading && <Typography>Loading...</Typography>}
         </Box>
-        <AddStudentButton onAddStudent={handleAddStudent} />
+
+        <Box
+          position="fixed"
+          bottom={16}
+          right={16}
+          zIndex="tooltip"
+          display={{ xs: "block", md: "none" }}  // Only show on smaller screens
+        >
+          <AddStudentButton onAddStudent={handleAddStudent} />
+        </Box>
       </Box>
-    </div>
+    </Box>
   );
 }

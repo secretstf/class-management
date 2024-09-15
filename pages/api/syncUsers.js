@@ -16,9 +16,11 @@ function createInvitationCode(existingCodes) {
   return code;
 }
 
+let invitationCodeDictionary = {};
+
 /**
  * Synchronizes users between Clerk and Firestore.
- * 
+ *
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
  * @returns {Promise<void>} - A promise that resolves when the synchronization is complete.
@@ -62,7 +64,13 @@ export default async function handler(req, res) {
 
     let firestoreIDs = new Set(Object.keys(firestoreUsers));
     let setInvitationCode = new Set(
-      Object.values(firestoreUsers).map((user) => user.invitationCode)
+      Object.values(firestoreUsers).map((user) => {
+        if (user.roles.student && user.invitationCode != 0) {
+          invitationCodeDictionary[user.invitationCode] = user.id;
+          console.log(invitationCodeDictionary);
+        }
+        return user.invitationCode;
+      })
     );
     let newIDs = [];
 
@@ -100,3 +108,5 @@ export default async function handler(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+
+export { invitationCodeDictionary };
