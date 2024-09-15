@@ -10,16 +10,18 @@ import { useUser, SignInButton } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { AccountTypeSelector } from "@/components/dashboardElements/AccountTypeSelector.js";
 import { updateUser } from "@/services/updateUser";
-import  ParentDashboard  from "@/components/dashboardElements/ParentDashboard.js";
+import ParentDashboard from "@/components/dashboardElements/ParentDashboard.js";
 import AdminPage from "@/pages/admin/index.js";
 import StudentDashboard from "@/components/dashboardElements/StudentDashboard.js";
+import CircularProgress from '@mui/joy/CircularProgress';
 
 const Dashboard = () => {
-  const {isLoading, user, isSignedIn} = useUser();
+  const { isLoading, user, isSignedIn } = useUser();
   const [userRole, setUserRole] = useState([]);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  async function  handleAccountSelection(type) {
+  async function handleAccountSelection(type) {
     setUserRole(type);
 
     // Update the user's roles in the database
@@ -40,20 +42,18 @@ const Dashboard = () => {
     if (response.status === 200) {
       setUserData(updatedUser);
     }
-  } 
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const response = await fetch("/api/firestoreUser", 
-      {
+      const response = await fetch("/api/firestoreUser", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-      }
-      );
+      });
       if (response.status === 401) {
-        return; 
+        return;
       } else if (response.status === 404) {
         return;
       }
@@ -61,18 +61,25 @@ const Dashboard = () => {
       const data = await response.json();
       setUserData(data);
       setUserRole(data.roles);
+      setLoading(false);
     };
 
     if (user) {
       fetchUserData();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
   return (
-    <Box display={"flex"} width={'100%'} height={'100%'} flexDirection={'column'}>
-
+    <Box
+      display={"flex"}
+      width={"100%"}
+      height={"100%"}
+      flexDirection={"column"}
+    >
       {/* If the user is not signed in */}
-      {!isLoading && !isSignedIn && (
+      {!loading && !isLoading && !isSignedIn && (
         <>
           <Typography>Sign in to view your dashboard</Typography>
           <SignInButton>
@@ -84,11 +91,20 @@ const Dashboard = () => {
       )}
 
       {/* If the user is loading in */}
-      {
-        isLoading && (
-          <Typography>Loading...</Typography>
-        )
-      }
+      {loading && (
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          height={"100%"}
+          width={"100%"}
+          gap={2}
+        >
+          <Typography variant="h2">Loading...</Typography>
+          <CircularProgress size={"md"} />
+        </Box>
+      )}
 
       {/* If the user is signed in
       {
@@ -99,46 +115,27 @@ const Dashboard = () => {
           </>
         )
       } */}
+      {!loading && (
+        <div id="dashboard-component">
+          {/* If the user is unset */}
+          { userData > 0 && userData.roles.length === 0 && (
+            <AccountTypeSelector onSelect={handleAccountSelection} />
+          )}
+          
+          {/* If the user is a student */}
+          {userRole.student && <StudentDashboard id={user.id} all={false} />}
 
-      {/* If the user is unset */}
-      {
-        userRole.length === 0 && (
-          <AccountTypeSelector onSelect={handleAccountSelection} />
-        )
-      }
 
-      {/* If the user is a parent */}
-      {
-        userRole.parent && (
-          <ParentDashboard user={userData} updateUser={updateUser}/>
-        )
-      }
+          {/* If the user is a parent */}
+          {userRole.parent && (
+            <ParentDashboard user={userData} updateUser={updateUser} />
+          )}
 
-      {/* If the user is a teacher */}
-      {
-        userRole.teacher && (
-          <Typography>Teacher Dashboard</Typography>
-        )
-      }
+          {/* If the user is a teacher */}
+          {userRole.teacher && <Typography>Teacher Dashboard</Typography>}
 
-      {/* If the user is a student */}
-      {
-       userRole.student && (
-         <StudentDashboard id={user.id} all={false}/>
-       )
-      }
-
-      {/* If the user is an admin */}
-      {/* {
-        userRole.admin && (
-          <AdminPage />
-        )
-      } */}
-
-        {
-          <Typography>{JSON.stringify(userData)}</Typography>
-        }
-      
+        </div>
+      )}
     </Box>
   );
 };

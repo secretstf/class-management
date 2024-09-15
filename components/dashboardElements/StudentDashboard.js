@@ -87,7 +87,7 @@ const StudentDashboard = ({ id, all}) => {
   return (
     <div>
       {!loading && (
-        <Box p={2}>
+        <Box px={{xs: 2, md: 3}} py={2}>
           {/* Current Lesson Section */}
           {currentLesson && (
             <Box
