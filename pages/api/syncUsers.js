@@ -16,8 +16,6 @@ function createInvitationCode(existingCodes) {
   return code;
 }
 
-let invitationCodeDictionary = {};
-
 /**
  * Synchronizes users between Clerk and Firestore.
  *
@@ -61,13 +59,13 @@ export default async function handler(req, res) {
       tempUsers[doc.id] = doc.data();
     });
     firestoreUsers = tempUsers;
+    const invitationCodeDictionary = {};
 
     let firestoreIDs = new Set(Object.keys(firestoreUsers));
     let setInvitationCode = new Set(
       Object.values(firestoreUsers).map((user) => {
         if (user.roles.student && user.invitationCode != 0) {
           invitationCodeDictionary[user.invitationCode] = user.id;
-          console.log(invitationCodeDictionary);
         }
         return user.invitationCode;
       })
@@ -77,6 +75,7 @@ export default async function handler(req, res) {
     users.forEach(async (user) => {
       if (!firestoreIDs.has(user.id)) {
         user.invitationCode = createInvitationCode(setInvitationCode);
+        setInvitationCode.add(user.invitationCode);
         await setDoc(doc(firestore, "users", user.id), user);
         newIDs.push(user.id);
       } else {
@@ -103,10 +102,15 @@ export default async function handler(req, res) {
         }
       }
     });
+
+    console.log(invitationCodeDictionary);
+    await setDoc(
+      doc(firestore, "invitationCodes", "dictionary"),
+      invitationCodeDictionary
+    );
+
     res.status(200).json({ message: "Users synced", newIDs: newIDs });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
-
-export { invitationCodeDictionary };

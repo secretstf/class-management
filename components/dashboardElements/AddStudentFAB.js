@@ -22,7 +22,8 @@ const AddStudentFAB = ({ updateUsers }) => {
   const handleAdd = async () => {
     setLoading(true);
     try {
-      const {isValid, studentID} = await checkInvitationCode(invitationCode)[isValid]; // Check if the code is valid
+      const {isValid, studentID} = await checkInvitationCode(invitationCode); // Check if the code is valid
+      console.log(isValid, studentID);
       if (isValid) {
         // Update users if the code is valid
         // updateUsers(invitationCode); // Modify this as per your logic to update users
