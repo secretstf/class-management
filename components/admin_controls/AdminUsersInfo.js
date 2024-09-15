@@ -68,7 +68,11 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
         sx={{
           // Display cards as grid with responsive columns
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)",md: "repeat(3, 1fr)" }, // 1 column on small screens, 3 columns on medium+
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+          }, // 1 column on small screens, 3 columns on medium+
           gap: 2, // Space between the cards
         }}
       >
@@ -77,7 +81,11 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
           <Card
             key={index}
             variant="contained"
-            style={{ marginBottom: "20px", width: "inherit", maxHeight: (expanded === user.id) ? "100vh" : "auto" }}
+            style={{
+              marginBottom: "20px",
+              width: "inherit",
+              maxHeight: expanded === user.id ? "100vh" : "auto",
+            }}
           >
             {/* Accordion for Emails */}
             <Accordion
@@ -128,6 +136,11 @@ const AdminUsersInfo = ({ users, updateUsers }) => {
                     </ListItem>
                   ))}
                 </List>
+                <Box p={2} pt={0}>
+                  <Typography variant="body1" >
+                    <strong>Invitation Code: </strong> {user.invitationCode}
+                  </Typography>
+                </Box>
 
                 {/* AdminRoleInfo component: shows roles and allows adjustments */}
                 <AdminRoleInfo user={user} updateRoles={updateRoles} />

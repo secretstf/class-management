@@ -25,12 +25,18 @@ const ParentDashboardInfo = ({ student }) => {
   function redirectStudentInfo() {
     console.log("Redirecting to student info");
     // Implement your redirection logic here
-    //window.location.href = `/student/${student.id}`; // Fixed student property access
+    window.location.href = `/student/${student.id}`; // Fixed student property access
   }
+
+  function getCurrentLesson() {
+    setCurrentLesson(student.currentLesson); // Fixed student property access
+  }
+
 
   useEffect(() => {
     console.log(student);
     getLastLesson();
+    getCurrentLesson();
   }, [student]); // Added student to dependencies
 
   return (
@@ -49,14 +55,14 @@ const ParentDashboardInfo = ({ student }) => {
       <Typography variant="h6">{student.fullName}</Typography>
 
       {Object.keys(lastLesson).length > 0 && (
-        <div id={`last-lesson`}>
+        <div id={`last-lesson-${student.id}`}>
           <Typography variant="body1" color="primary">
             Last Assignment ({getLessonDate()})
           </Typography>
           {Object.keys(lastLesson)
             .filter((key) => (key !== "date" && key !== "completed"))
             .map((key) => (
-              <Box px={2} key={key}>
+              <Box px={1} key={`${student.id}-${key}`}>
                 <Typography
                   variant="subtitle1"
                   textTransform={"capitalize"}
@@ -71,6 +77,27 @@ const ParentDashboardInfo = ({ student }) => {
                 </Typography>
               </Box>
             ))}
+            {lastLesson.hasOwnProperty("completed") && (
+              <Box px={1} key={`${student.id}-completed`}>
+              <Typography
+                variant="subtitle1"
+                textTransform={"capitalize"}
+                display={"inline"}
+                color="grey"
+              >
+                Completed: 
+              </Typography>
+              {lastLesson.completed ? (
+                <Typography variant="subtitle1" display={"inline"} color="green">
+                  {" "}Yes
+                </Typography>
+              ) : (
+                <Typography variant="subtitle1" display={"inline"} color="red">
+                  {" "}No
+                </Typography>
+              )}
+            </Box>
+              )}
         </div>
       )}
     </Box>

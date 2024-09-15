@@ -12,6 +12,7 @@ import { AccountTypeSelector } from "@/components/dashboardElements/AccountTypeS
 import { updateUser } from "@/services/updateUser";
 import  ParentDashboard  from "@/components/dashboardElements/ParentDashboard.js";
 import AdminPage from "@/pages/admin/index.js";
+import StudentDashboard from "@/components/dashboardElements/StudentDashboard.js";
 
 const Dashboard = () => {
   const {isLoading, user, isSignedIn} = useUser();
@@ -68,7 +69,7 @@ const Dashboard = () => {
   }, [user]);
 
   return (
-    <Box justifyContent={"center"} alignItems={"center"} display={"flex"} width={'100%'} height={'100%'} flexDirection={'column'}>
+    <Box display={"flex"} width={'100%'} height={'100%'} flexDirection={'column'}>
 
       {/* If the user is not signed in */}
       {!isLoading && !isSignedIn && (
@@ -123,8 +124,8 @@ const Dashboard = () => {
       {/* If the user is a student */}
       {
        userRole.student && (
-          <Typography>Student Dashboard</Typography>
-        )
+         <StudentDashboard id={user.id} all={false}/>
+       )
       }
 
       {/* If the user is an admin */}
